@@ -27,3 +27,20 @@ helm install \
 2. Apply cert-manger config:
 `kubectl apply -f ./cert-manager/`
 
+## 4. Database & Persistence Layer
+The database uses a `StatefulSet` with `hostPath` persistence and `Secret` management.
+
+### 4.1 Storage Preparation
+Before deploying, ensure the data directory exists on the host node and is owned by postgres:
+```bash
+sudo mkdir -p /mnt/data/postgres
+sudo chown -R 999:999 /mnt/data/postgres
+```
+
+### 4.2 Manual Secret Setup
+1. Copy the template: 
+   `cp ./k8s-config/secrets/postgres-secret.example.yaml ./k8s-config/secrets/postgres-secret.yaml`
+2. Update the `stringData` values in `./k8s-config/secrets/postgres-secret.yaml` with your actual passwords.
+3. Apply the secret to the cluster:
+   `kubectl apply -f ./k8s-config/secrets/postgres-secret.yaml`
+
