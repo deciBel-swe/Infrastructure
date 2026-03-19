@@ -38,9 +38,31 @@ sudo chown -R 999:999 /mnt/data/postgres
 ```
 
 ### 4.2 Manual Secret Setup
-1. Copy the template: 
-   `cp ./k8s-config/secrets/postgres-secret.example.yaml ./k8s-config/secrets/postgres-secret.yaml`
-2. Update the `stringData` values in `./k8s-config/secrets/postgres-secret.yaml` with your actual passwords.
-3. Apply the secret to the cluster:
-   `kubectl apply -f ./k8s-config/secrets/postgres-secret.yaml`
+1. **Copy the template:**
+   ```bash
+   cp ./k8s-config/secrets/postgres-secret.example.yaml ./k8s-config/secrets/postgres-secret.yaml
+   ```
+2. **Update values:** Edit `stringData` in `./k8s-config/secrets/postgres-secret.yaml` with your actual passwords.
+3. **Apply to cluster:**
+   ```bash
+   kubectl apply -f ./k8s-config/secrets/postgres-secret.yaml
+   ```
+## **5. Registry Authentication**
+To allow the cluster to pull private images, create a `docker-registry` secret:
 
+ 1. **Login to your registry:**
+      ```bash
+      docker login
+      ```
+ 2. **Generate the secret manifest:**
+  If the default path below fails, copy `~/.docker/config.json` to your current directory and update the `--from-file` path.
+      ```bash
+      kubectl create secret generic my-registry-secret \
+        --from-file=.dockerconfigjson=$HOME/.docker/config.json \
+        --type=kubernetes.io/dockerconfigjson \
+        --dry-run=client -o yaml | tee ./k8s-config/secrets/registry-secret.yaml
+      ```
+ 3. **Apply the secret:**
+      ```bash
+      kubectl apply -f ./k8s-config/secrets/registry-secret.yaml
+      ```
