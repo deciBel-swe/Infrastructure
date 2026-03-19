@@ -4,3 +4,5 @@ kubeconfig
 *.log
 .DS_Store
 Thumbs.db
+
+k8s-config/secrets/*
