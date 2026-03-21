@@ -73,5 +73,99 @@
 - runner: runner OS/arch/temp/tool_cache
 - inputs: parameters to reusable/workflow_dispatch workflows
 
+--- 
+---
 ## Runner types
-...
+- Github hosted
+- 3rd Party hosted
+- Self-hosted
+- Runner type specified controls:
+    - VM image used
+    - Resources available
+
+## Persisting Data
+- Artifacts
+- Cache
+
+## Github Token Permissions:
+- Default:
+    - contents: read
+    - packages: read
+- All: (unless specified, values can be read | write | none)
+    - actions
+    - attestations
+    - checks
+    - contents
+    - deployments
+    - id-token: write | none
+    - issues
+    - models: read | none
+    - discussions
+    - packages
+    - pages
+    - pull-requests
+    - security-events
+    - statuses
+
+## External Service Auth
+- Static Credentials (e.g. API key): long-lived credential stored in GHA repo/env secret
+- OIDC Token: Short-lived credential retrieved at runtime, requires service to support OIDC (required id-token: write)
+
+## Matrix and Conditionals
+- concurrency: group workflows and control how they should be handled (cancel-in-progress, for example)
+- matrix: enables executing multiple copies of a job with different configs
+- if: allows for conditional execution of jobs and steps 
+
+---
+
+# Marketplace Actions
+
+---
+
+# Authoring Actions
+
+1. Composite Action
+2. Reusable Workflow
+3. JavaScript/TypeScript Action
+4. Container Action
+
+# Common workflow types
+1. Validate
+2. Build
+3. Deploy
+4. Repo Automations
+
+---
+---
+# STEPS TO GREAT SUCCESS
+> Source: https://www.youtube.com/watch?v=jq3ruE-Coes
+- Have a Specification for how we version applications depending on changes introduced
+- a consistent way of writing and structuring commit messages
+- to be able to imply the next version of the app from commit hitory
+- to automatically:
+    - create (pre-)releases tagged with derived version
+    - apply them to the docker image builds
+    - generate changelogs
+    - whatever you come up with
+## 1. Semantic Versioning
+- https://semver.org/
+- Have a specification for how we version applications depending on the changes introduced
+- **{Major}.{Minor}.{Patch}**
+    - **Major**: Breaking API changes (add endpoint, edit endpoint, etc)
+    - **Minor**: Backward compatible features
+    - **Patch**: Backward compatible bug fixes
+
+## 2. Conventional Commits
+- https://www.conventionalcommits.org/en/v1.0.0/
+- Synergises with Semantic Versioning, enabling automation based on the artifacts which developers provide with the commits.
+- Structure: `<type>(optional scope): <description>`
+    - Patch: fix
+    - Minor: feat
+    - Major: `BREAKING CHANGE: <desc>` in body maybe even with **!** after `<type>`: 
+
+## 3. Actions
+- on every merge to master:
+    - Checkout to the commit an action is running against
+    - Calculate the new version of our app for this commit
+    - Create a Github pre-release
+    - Build & Tag & Push docker image with the calulated version
