@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: frontend
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: "heatrex/k8s-trials:frontend"
+        image: ghcr.io/decibel-swe/frontend:v0.46.1-prerelease0
         imagePullPolicy: Always
         # resources:
         #   limits:
