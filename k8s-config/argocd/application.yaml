@@ -8,14 +8,14 @@ spec:
   source:
     repourl: https://github.com/decibel-swe/infrastructure.git
     targetrevision: dev
-    path: .
+    path: k8s-manifests
   destination:
     server: https://kubernetes.default.svc
-    namespace: myapp
+    namespace: default
   syncPolicy:
     syncOptions:
       - createnamespace=true
     automated:
-      selfheal: true 
+      # selfheal: true 
       prune: true
 
