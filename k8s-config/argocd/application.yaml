@@ -1,0 +1,21 @@
+apiversion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: decibel-dev-argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repourl: https://github.com/decibel-swe/infrastructure.git
+    targetrevision: dev
+    path: .
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: myapp
+  syncPolicy:
+    syncOptions:
+      - createnamespace=true
+    automated:
+      selfheal: true 
+      prune: true
+
