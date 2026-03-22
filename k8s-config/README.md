@@ -66,3 +66,37 @@ To allow the cluster to pull private images, create a `docker-registry` secret:
       ```bash
       kubectl apply -f ./k8s-config/secrets/registry-secret.yaml
       ```
+---
+
+## 6. GitOps with Argo CD (Core)
+Argo CD is the GitOps engine that synchronizes the state of the GitHub `Infrastructure` repository with the actual state of the K3s cluster.
+
+### 6.1 Installation
+Install the **Core** (headless) version (I used it to save ram/cpu).
+```bash
+kubectl create namespace argocd
+kubectl apply -n argocd --server-side --force-conflicts -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.3.4/manifests/core-install.yaml
+```
+
+### 6.2 Private Repository Access
+Because the Infrastructure repo is private, you must manually provide Argo CD with a GitHub Personal Access Token (PAT).
+1. **Create a Secret**: 
+    * `cp ./secrets/private-repo-secret-template.yaml ./secrets/private-repo-secret.yaml`
+    * Edit with your info
+2. **Apply manually:** `kubectl apply -f ./secrets/private-repo-secret.yaml`
+
+### 6.3 Management & UI Access
+Argo CD Core does not expose a public UI. To manage the cluster or view the dashboard make sure you can acess `kubectl` remotely and do the following:
+1. **Switch Kubectl Namespace**: choose **only one** of the following
+    * `kubectl config set-context --current --namespace=argocd`
+    * install and use `kubens`: `kubens argocd`
+2. **Start the Dashboard:** Inside the server session: `argocd admin dashboard --core` 
+3. **Open Browser:** Navigate to `http://localhost:8080`
+
+### 6.4 Connecting the "Dev" Environment
+To start the automated sync for the development branch, apply the Application manifest:
+```bash
+kubectl apply -f ./argocd/application.yaml
+```
+
+---
