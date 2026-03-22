@@ -16,12 +16,21 @@ spec:
       - name: ghcr-registry-secret
       containers:
       - name: frontend
-        image: ghcr.io/decibel-swe/frontend:v0.46.1-prerelease0
+        image: ghcr.io/decibel-swe/frontend:v0.47.19
         imagePullPolicy: Always
         # resources:
         #   limits:
         #     memory: "128Mi"
         #     cpu: "500m"
+        env: 
+        - name: RECAPTCHA_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: frontend-secret
+              key: RECAPTCHA_SECRET_KEY
+        envFrom:
+          - configMapRef:
+              name: frontend-configmap
         ports:
         - containerPort: 3000
 ---
