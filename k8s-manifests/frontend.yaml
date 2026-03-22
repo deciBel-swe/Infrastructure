@@ -44,3 +44,12 @@ spec:
   ports:
   - port: 3000
     targetPort: 3000
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-configmap
+data:
+  NEXT_PUBLIC_API_URL: https://decibel.foo/api
+  NEXT_PUBLIC_APP_URL: https://decibel.foo
+  NEXT_PUBLIC_USE_MOCK: "false"
