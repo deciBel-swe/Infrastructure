@@ -4,7 +4,7 @@ metadata:
   name: letsencrypt-issuer
 spec:
   acme:
-    email: "dev@replace.com"
+    email: decibelorganization@gmail.com
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-issuer-key

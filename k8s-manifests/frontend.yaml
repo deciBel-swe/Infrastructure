@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: frontend
@@ -12,16 +12,27 @@ spec:
       labels:
         app: frontend
     spec:
+      imagePullSecrets:
+      - name: ghcr-registry-secret
       containers:
       - name: frontend
-        image: "heatrex/k8s-trials:frontend"
+        image: ghcr.io/decibel-swe/frontend:v0.49.9-prerelease0
         imagePullPolicy: Always
         # resources:
         #   limits:
         #     memory: "128Mi"
         #     cpu: "500m"
+        env: 
+        - name: RECAPTCHA_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: frontend-secret
+              key: RECAPTCHA_SECRET_KEY
+        envFrom:
+          - configMapRef:
+              name: frontend-configmap
         ports:
-        - containerPort: 80
+        - containerPort: 3000
 ---
 apiVersion: v1
 kind: Service
@@ -31,5 +42,14 @@ spec:
   selector:
     app: frontend
   ports:
-  - port: 80
-    targetPort: 80
+  - port: 3000
+    targetPort: 3000
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-configmap
+data:
+  NEXT_PUBLIC_API_URL: https://decibel.foo/api
+  NEXT_PUBLIC_APP_URL: https://decibel.foo
+  NEXT_PUBLIC_USE_MOCK: "false"

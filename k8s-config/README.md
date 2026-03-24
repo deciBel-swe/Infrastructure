@@ -38,9 +38,65 @@ sudo chown -R 999:999 /mnt/data/postgres
 ```
 
 ### 4.2 Manual Secret Setup
-1. Copy the template: 
-   `cp ./k8s-config/secrets/postgres-secret.example.yaml ./k8s-config/secrets/postgres-secret.yaml`
-2. Update the `stringData` values in `./k8s-config/secrets/postgres-secret.yaml` with your actual passwords.
-3. Apply the secret to the cluster:
-   `kubectl apply -f ./k8s-config/secrets/postgres-secret.yaml`
+1. **Copy the template:**
+   ```bash
+   cp ./k8s-config/secrets/postgres-secret.example.yaml ./k8s-config/secrets/postgres-secret.yaml
+   ```
+2. **Update values:** Edit `stringData` in `./k8s-config/secrets/postgres-secret.yaml` with your actual passwords.
+3. **Apply to cluster:**
+   ```bash
+   kubectl apply -f ./k8s-config/secrets/postgres-secret.yaml
+   ```
+## **5. Registry Authentication**
+To allow the cluster to pull private images, create a `docker-registry` secret:
 
+ 1. **Login to your registry:**
+      ```bash
+      docker login
+      ```
+ 2. **Generate the secret manifest:**
+  If the default path below fails, copy `~/.docker/config.json` to your current directory and update the `--from-file` path.
+      ```bash
+      kubectl create secret generic my-registry-secret \
+        --from-file=.dockerconfigjson=$HOME/.docker/config.json \
+        --type=kubernetes.io/dockerconfigjson \
+        --dry-run=client -o yaml | tee ./k8s-config/secrets/registry-secret.yaml
+      ```
+ 3. **Apply the secret:**
+      ```bash
+      kubectl apply -f ./k8s-config/secrets/registry-secret.yaml
+      ```
+---
+
+## 6. GitOps with Argo CD (Core)
+Argo CD is the GitOps engine that synchronizes the state of the GitHub `Infrastructure` repository with the actual state of the K3s cluster.
+
+### 6.1 Installation
+Install the **Core** (headless) version (I used it to save ram/cpu).
+```bash
+kubectl create namespace argocd
+kubectl apply -n argocd --server-side --force-conflicts -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.3.4/manifests/core-install.yaml
+```
+
+### 6.2 Private Repository Access
+Because the Infrastructure repo is private, you must manually provide Argo CD with a GitHub Personal Access Token (PAT).
+1. **Create a Secret**: 
+    * `cp ./secrets/private-repo-secret-template.yaml ./secrets/private-repo-secret.yaml`
+    * Edit with your info
+2. **Apply manually:** `kubectl apply -f ./secrets/private-repo-secret.yaml`
+
+### 6.3 Management & UI Access
+Argo CD Core does not expose a public UI. To manage the cluster or view the dashboard make sure you can acess `kubectl` remotely and do the following:
+1. **Switch Kubectl Namespace**: choose **only one** of the following
+    * `kubectl config set-context --current --namespace=argocd`
+    * install and use `kubens`: `kubens argocd`
+2. **Start the Dashboard:** Inside the server session: `argocd admin dashboard --core` 
+3. **Open Browser:** Navigate to `http://localhost:8080`
+
+### 6.4 Connecting the "Dev" Environment
+To start the automated sync for the development branch, apply the Application manifest:
+```bash
+kubectl apply -f ./argocd/application.yaml
+```
+
+---

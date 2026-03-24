@@ -23,18 +23,18 @@ spec:
           service:
             name: backend-service
             port:
-              number: 8080
+              number: 8081
       - pathType: Prefix
         path: "/ws"
         backend:
           service:
             name: backend-service
             port:
-              number: 8080
+              number: 8081
       - pathType: Prefix
         path: "/"
         backend:
           service:
             name: frontend-service
             port: 
-              number: 80
+              number: 3000

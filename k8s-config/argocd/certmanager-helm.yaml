@@ -1,0 +1,23 @@
+# OCI guide: https://argo-cd.readthedocs.io/en/latest/user-guide/oci/
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd 
+spec:
+  project: default
+  source:
+    path: .
+    repoURL: oci://quay.io/jetstack/charts/cert-manager
+    targetRevision: v1.19.4
+    helm:
+      releaseName: cert-manager
+      parameters:
+        - name: crds.enabled
+          value: "true"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
