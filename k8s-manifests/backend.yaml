@@ -69,4 +69,4 @@ kind: ConfigMap
 metadata:
   name: backend-configmap
 data:
-  APP_GOOGLE_REDIRECT-URI: https://decibel.foo/oauth/callback
+  APP_GOOGLE_REDIRECT-URI: http://localhost:8081
