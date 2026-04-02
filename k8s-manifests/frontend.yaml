@@ -16,7 +16,7 @@ spec:
       - name: ghcr-registry-secret
       containers:
       - name: frontend
-        image: ghcr.io/decibel-swe/frontend:v0.85.11-prerelease0
+        image: ghcr.io/decibel-swe/frontend:v0.86.1-prerelease0
         imagePullPolicy: Always
         # resources:
         #   limits:
