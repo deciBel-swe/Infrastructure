@@ -70,7 +70,7 @@ spec:
             secretKeyRef:
               name: backend-secret
               key: GOOGLE_CLIENT_SECRET
-              
+
         envFrom:
           - configMapRef:
               name: backend-configmap
@@ -95,3 +95,5 @@ metadata:
 data:
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_WEB_REDIRECT_URI: "https://decibel.foo/oauth/callback"
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_DESKTOP_REDIRECT_URI: "http://localhost:8081/oauth/callback"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_WEB_PROVIDER: "google"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_DESKTOP_PROVIDER: "google"
