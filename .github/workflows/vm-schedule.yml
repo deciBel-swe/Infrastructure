@@ -1,0 +1,45 @@
+name: Azure VM Power Schedule
+
+on:
+  schedule:
+    # 12 UTC = 14 Local time
+    - cron: '0 12 * * *' 
+    # 0 UTC -> 2 Local time 
+    - cron: '0 0 * * *'
+
+  workflow_dispatch: 
+    inputs:
+      action:
+        description: 'Manual Override'
+        required: true
+        default: 'start'
+        type: choice
+        options:
+          - start
+          - deallocate
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  manage-azure-vm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log into Azure via OIDC
+        uses: azure/login@v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Start VM
+        if: github.event.schedule == '0 12 * * *' || github.event.inputs.action == 'start'
+        run: |
+          az vm start --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} --name ${{ vars.AZURE_VM_NAME }}
+
+
+      - name: Deallocate VM
+        if: github.event.schedule == '0 0 * * *' || github.event.inputs.action == 'deallocate'
+        run: |
+          az vm deallocate --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} --name ${{ vars.AZURE_VM_NAME }}
