@@ -3,7 +3,7 @@ name: Azure VM Power Schedule
 on:
   schedule:
     # 12 UTC = 14 Local time
-    - cron: '0 12 * * *' 
+    - cron: '11 13 * * *' 
     # 0 UTC -> 2 Local time 
     - cron: '0 0 * * *'
 
