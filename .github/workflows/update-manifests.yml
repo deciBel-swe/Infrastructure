@@ -40,6 +40,6 @@ jobs:
           if git diff-index --quiet HEAD; then
             echo "No changes to commit."
           else
-            git commit -m "bump: update ${APP_NAME} to ${NEW_VERSION}"
+            git commit -m "bump: ${APP_NAME} to ${NEW_VERSION}"
             git push origin "$TARGET_BRANCH"
           fi
