@@ -13,31 +13,33 @@ jobs:
     steps:
       - name: Checkout Infra Repo
         uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0
+        
       - name: Update Image Tag
         run: |
-          APP_NAME=${{ github.event.client_payload.app }}           # "frontend" or "backend"
-          NEW_VERSION=${{ github.event.client_payload.version }}    # version string
-          ENV_NAME=${{ github.event.client_payload.environment }}   # "prod" or "dev"
-          
-          echo "Updating $APP_NAME to $NEW_VERSION in $ENV_NAME environment"
+          APP_NAME="${{ github.event.client_payload.app }}"           # "frontend" or "backend"
+          NEW_VERSION="${{ github.event.client_payload.version }}"    # version string         
           
           TARGET_FILE="k8s-manifests/${APP_NAME}.yaml"
+          TARGET_BRANCH="${{ github.event.client_payload.environment == 'prod' && 'main' || 'dev' }}"
           
+          echo "Updating $APP_NAME to $NEW_VERSION file $TARGET_FILE in branch $TARGET_BRANCH"
+          
+          git checkout "$TARGET_BRANCH"
+
           sed -i "s|image: ghcr.io/decibel-swe/${APP_NAME}:.*|image: ghcr.io/decibel-swe/${APP_NAME}:${NEW_VERSION}|g" $TARGET_FILE
 
-      - name: Commit and Push Changes
-        run: |
           AUTHOR_NAME="${{ github.event.client_payload.author }}"
           AUTHOR_ID="${{ github.event.client_payload.author_id }}"
 
           git config user.name "$AUTHOR_NAME"
           git config user.email "${AUTHOR_ID}+${AUTHOR_NAME}@users.noreply.github.com"
           
-          git add .
+          git add "$TARGET_FILE"
           if git diff-index --quiet HEAD; then
             echo "No changes to commit."
           else
-            git commit -m "bump: update ${APP_NAME} to ${NEW_VERSION} in ${ENV_NAME}"
-            git push origin main
+            git commit -m "bump: update ${APP_NAME} to ${NEW_VERSION}"
+            git push origin "$TARGET_BRANCH"
           fi
