@@ -18,10 +18,13 @@ spec:
       - name: frontend
         image: ghcr.io/decibel-swe/frontend:v1.0.5-prerelease0
         imagePullPolicy: Always
-        # resources:
-        #   limits:
-        #     memory: "128Mi"
-        #     cpu: "500m"
+        resources:
+          requests:
+            memory: "256Mi" 
+            cpu: "50m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
         env: 
         - name: RECAPTCHA_SECRET_KEY
           valueFrom:

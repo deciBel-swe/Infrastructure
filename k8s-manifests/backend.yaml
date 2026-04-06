@@ -16,10 +16,13 @@ spec:
       containers:
       - name: backend
         image: ghcr.io/decibel-swe/backend:v0.53.3-prerelease0
-        # resources:
-        #   limits:
-        #     memory: "128Mi"
-        #     cpu: "500m"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "100m"
+          limits:
+            memory: "800Mi"
+            cpu: "500m"
         envFrom:
           - configMapRef:
               name: backend-configmap

@@ -17,6 +17,13 @@ alertmanager:
 
 prometheus:
   prometheusSpec:
+    resources:
+        requests:
+          memory: "400Mi"
+          cpu: "200m"
+        limits:
+          memory: "800Mi"
+          cpu: "400m"
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
     retention: 3d
@@ -30,6 +37,11 @@ prometheus:
 
 grafana:
   enabled: true
+  resources:
+    requests:
+      memory: "150Mi"
+    limits:
+      memory: "512Mi"
   admin:
     existingSecret: prometheus-secret
     userKey: PROMETHEUS_ADMIN_USER
@@ -47,3 +59,7 @@ grafana:
       - secretName: grafana-tls-secret
         hosts:
           - grafana.decibel.foo
+  grafana.ini:
+    server:
+      root_url: https://grafana.decibel.foo
+      domain: grafana.decibel.foo
