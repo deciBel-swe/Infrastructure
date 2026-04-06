@@ -1,0 +1,24 @@
+loki:
+  enabled: true
+  persistence:
+    enabled: true
+    accessModes: ["ReadWriteOnce"]
+    size: 1Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
+promtail:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+grafana:
+  enabled: false
