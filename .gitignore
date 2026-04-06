@@ -1,4 +1,3 @@
-values.yaml
 kubeconfig
 .env
 *.log
