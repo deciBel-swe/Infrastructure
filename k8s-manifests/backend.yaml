@@ -15,7 +15,7 @@ spec:
       - name: ghcr-registry-secret
       containers:
       - name: backend
-        image: ghcr.io/decibel-swe/backend:v0.52.13-prerelease0
+        image: ghcr.io/decibel-swe/backend:v0.53.3-prerelease0
         # resources:
         #   limits:
         #     memory: "128Mi"
