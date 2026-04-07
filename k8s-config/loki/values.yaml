@@ -1,5 +1,6 @@
 loki:
   enabled: true
+  isDefault: false
   persistence:
     enabled: true
     accessModes: ["ReadWriteOnce"]
@@ -22,3 +23,6 @@ promtail:
       memory: 128Mi
 grafana:
   enabled: false
+  sidecar:
+    datasources:
+      enabled: false
