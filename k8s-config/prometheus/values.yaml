@@ -53,10 +53,16 @@ grafana:
       defaultDatasourceEnabled: false
 
   additionalDataSources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-stack-kube-prom-prometheus.monitoring:9090
+      isDefault: true
+      access: proxy
     - name: Loki
       type: loki
       url: http://loki-stack.monitoring.svc.cluster.local:3100
       isDefault: false
+      access: proxy
 
   persistence:
     enabled: true
