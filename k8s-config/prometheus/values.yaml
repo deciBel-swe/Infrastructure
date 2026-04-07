@@ -47,12 +47,17 @@ grafana:
     userKey: PROMETHEUS_ADMIN_USER
     passwordKey: PROMETHEUS_ADMIN_PASSWORD
     
+  sidecar:
+    datasources:
+      enabled: true
+      defaultDatasourceEnabled: false
+
   additionalDataSources:
     - name: Loki
       type: loki
       url: http://loki-stack.monitoring.svc.cluster.local:3100
       isDefault: false
-      
+
   persistence:
     enabled: true
     accessModes: ["ReadWriteOnce"]
