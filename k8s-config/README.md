@@ -75,7 +75,7 @@ Argo CD is the GitOps engine that synchronizes the state of the GitHub `Infrastr
 Install the **Core** (headless) version (I used it to save ram/cpu).
 ```bash
 kubectl create namespace argocd
-kubectl apply -n argocd --server-side --force-conflicts -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.3.4/manifests/core-install.yaml
+kubectl apply -k ./k8s-config/argocd-install/ --server-side --force-conflicts
 ```
 
 ### 6.2 Private Repository Access

@@ -15,11 +15,17 @@ spec:
       - name: ghcr-registry-secret
       containers:
       - name: backend
-        image: ghcr.io/decibel-swe/backend:v0.33.1-prerelease0
-        # resources:
-        #   limits:
-        #     memory: "128Mi"
-        #     cpu: "500m"
+        image: ghcr.io/decibel-swe/backend:v0.53.16-prerelease0
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "100m"
+          limits:
+            memory: "800Mi"
+            cpu: "500m"
+        envFrom:
+          - configMapRef:
+              name: backend-configmap
         env:
         - name: SPRING_DATASOURCE_URL
           value: jdbc:postgresql://postgres-service:5432/messaging_db
@@ -37,6 +43,29 @@ spec:
             secretKeyRef:
               name: postgres-secret
               key: POSTGRES_PASSWORD
+
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_WEB_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: GOOGLE_WEB_CLIENT_ID
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_WEB_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: GOOGLE_WEB_CLIENT_SECRET
+
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_DESKTOP_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: GOOGLE_DESKTOP_CLIENT_ID
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_DESKTOP_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: GOOGLE_DESKTOP_CLIENT_SECRET
+
         - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID
           valueFrom:
             secretKeyRef:
@@ -47,9 +76,6 @@ spec:
             secretKeyRef:
               name: backend-secret
               key: GOOGLE_CLIENT_SECRET
-        envFrom:
-          - configMapRef:
-              name: backend-configmap
         ports:
         - containerPort: 8081
 ---
@@ -69,4 +95,8 @@ kind: ConfigMap
 metadata:
   name: backend-configmap
 data:
-  APP_GOOGLE_REDIRECT-URI: http://localhost:8081
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_WEB_REDIRECT_URI: "https://decibel.foo/oauth/callback"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_DESKTOP_REDIRECT_URI: "http://localhost:8081/oauth/callback"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_WEB_PROVIDER: "google"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_DESKTOP_PROVIDER: "google"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
