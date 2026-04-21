@@ -82,10 +82,10 @@ spec:
         - name: firebase-key-volume
           mountPath: "/etc/firebase"
           readOnly: true
-        volumes:
-        - name: firebase-key-volume
-          secret:
-            secretName: firebase-key-secret
+      volumes:
+      - name: firebase-key-volume
+        secret:
+          secretName: firebase-key-secret
 ---
 apiVersion: v1
 kind: Service
