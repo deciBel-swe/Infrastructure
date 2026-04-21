@@ -78,6 +78,14 @@ spec:
               key: GOOGLE_CLIENT_SECRET
         ports:
         - containerPort: 8081
+        volumeMounts:
+        - name: firebase-key-volume
+          mountPath: "/etc/firebase"
+          readOnly: true
+        volumes:
+        - name: firebase-key-volume
+          secret:
+            secretName: firebase-key-secret
 ---
 apiVersion: v1
 kind: Service
@@ -100,3 +108,4 @@ data:
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_WEB_PROVIDER: "google"
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_DESKTOP_PROVIDER: "google"
   SPRING_JPA_HIBERNATE_DDL_AUTO: "validate"
+  FIREBASE_SERVICE_ACCOUNT_PATH: "/etc/firebase/firebase.json"
