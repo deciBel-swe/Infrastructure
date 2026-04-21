@@ -76,6 +76,25 @@ spec:
             secretKeyRef:
               name: backend-secret
               key: GOOGLE_CLIENT_SECRET
+        
+        # Stripe
+        - name:  STRIPE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: STRIPE_API_KEY
+
+        - name: STRIPE_PRICE_PRO_ID
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: STRIPE_PRICE_PRO_ID
+
+        - name: STRIPE_WEBHOOK_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: STRIPE_WEBHOOK_SECRET
         ports:
         - containerPort: 8081
         volumeMounts:
