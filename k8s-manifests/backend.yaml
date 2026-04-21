@@ -109,4 +109,4 @@ data:
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_DESKTOP_PROVIDER: "google"
   SPRING_FLYWAY_ENABLED: "false"
   SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
-  FIREBASE_SERVICE_ACCOUNT_PATH: "/etc/firebase/firebase.json"
+  FIREBASE_SERVICE_ACCOUNT_PATH: "/etc/firebase/firebase-service-account.json"
