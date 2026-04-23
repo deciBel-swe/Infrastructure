@@ -2,10 +2,10 @@ name: Azure VM Power Schedule
 
 on:
   schedule:
-    # 12 UTC = 14 Local time
-    - cron: '0 12 * * *' 
-    # 0 UTC -> 2 Local time 
-    - cron: '0 0 * * *'
+    # 11 UTC = 14 Local time during daylight saving
+    - cron: '0 11 * * *' 
+    # 23 UTC -> 2 Local time during daylight saving
+    - cron: '0 23 * * *'
 
   workflow_dispatch: 
     inputs:
