@@ -148,3 +148,4 @@ data:
   SPRING_FLYWAY_ENABLED: "false"
   SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
   FIREBASE_SERVICE_ACCOUNT_PATH: "/etc/firebase/firebase-service-account.json"
+  MANAGEMENT_METRICS_TAGS_APPLICATION: "backend"
