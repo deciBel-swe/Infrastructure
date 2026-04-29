@@ -90,6 +90,25 @@ spec:
             secretKeyRef:
               name: backend-secret
               key: STRIPE_WEBHOOK_SECRET
+        
+        # Azure Storage
+        - name: AZURE_STORAGE_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: AZURE_STORAGE_CONNECTION_STRING
+
+        # Email
+        - name: SPRING_MAIL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: SPRING_MAIL_USERNAME
+        - name: SPRING_MAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: SPRING_MAIL_PASSWORD
         ports:
         - containerPort: 8081
         volumeMounts:
