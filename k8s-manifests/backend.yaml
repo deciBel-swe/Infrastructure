@@ -115,6 +115,28 @@ spec:
             secretKeyRef:
               name: backend-secret
               key: SPRING_MAIL_PASSWORD
+
+        # Google reCAPTCHA Enterprise
+        - name: GOOGLE_RECAPTCHA_ENTERPRISE_PROJECT_ID
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: GOOGLE_RECAPTCHA_ENTERPRISE_PROJECT_ID
+        - name: GOOGLE_RECAPTCHA_ENTERPRISE_API_KEY
+          valueFrom:  
+            secretKeyRef:
+              name: backend-secret
+              key: GOOGLE_RECAPTCHA_ENTERPRISE_API_KEY
+        - name: GOOGLE_RECAPTCHA_ENTERPRISE_SITE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: GOOGLE_RECAPTCHA_ENTERPRISE_SITE_KEY
+        - name: CAPTCHA_BYPASS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: CAPTCHA_BYPASS_TOKEN
         ports:
         - containerPort: 8081
         startupProbe:
