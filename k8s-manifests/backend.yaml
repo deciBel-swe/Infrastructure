@@ -119,25 +119,26 @@ spec:
         - containerPort: 8081
         startupProbe:
           httpGet:
-            path: /api/actuator/health
+            path: /api/actuator/health/liveness
             port: 8081
           initialDelaySeconds: 30
           periodSeconds: 10
           failureThreshold: 15
+          timeoutSeconds: 5
         readinessProbe:
           httpGet:
-            path: /api/actuator/health
+            path: /api/actuator/health/readiness
             port: 8081
-          initialDelaySeconds: 15
           periodSeconds: 5
           successThreshold: 1
           failureThreshold: 6
+          timeoutSeconds: 5
         livenessProbe:
           httpGet:
-            path: /api/actuator/health
+            path: /api/actuator/health/liveness
             port: 8081
-          initialDelaySeconds: 30
           periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - name: firebase-key-volume
           mountPath: "/etc/firebase"
