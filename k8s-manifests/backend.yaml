@@ -28,11 +28,13 @@ spec:
             cpu: "100m"
           limits:
             memory: "800Mi"
-            cpu: "500m"
+            cpu: "1000m"
         envFrom:
           - configMapRef:
               name: backend-configmap
         env:
+        - name: JAVA_OPTS
+          value: "-XX:MaxRAMPercentage=75.0"
         - name: SPRING_DATASOURCE_URL
           value: jdbc:postgresql://postgres-service:5432/messaging_db
         - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
@@ -137,6 +139,12 @@ spec:
             secretKeyRef:
               name: backend-secret
               key: CAPTCHA_BYPASS_TOKEN
+        # Email bypass domain
+        - name: EMAIL_BYPASS_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: EMAIL_BYPASS_DOMAIN
         ports:
         - containerPort: 8081
         startupProbe:
