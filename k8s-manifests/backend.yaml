@@ -33,7 +33,7 @@ spec:
           - configMapRef:
               name: backend-configmap
         env:
-        - name: JAVA_OPTS
+        - name: JAVA_TOOL_OPTIONS
           value: "-XX:MaxRAMPercentage=75.0"
         - name: SPRING_DATASOURCE_URL
           value: jdbc:postgresql://postgres-service:5432/messaging_db
