@@ -3,6 +3,12 @@ kind: Deployment
 metadata:
   name: backend
 spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: backend
@@ -15,18 +21,20 @@ spec:
       - name: ghcr-registry-secret
       containers:
       - name: backend
-        image: ghcr.io/decibel-swe/backend:v0.79.5-prerelease0
+        image: ghcr.io/decibel-swe/backend:v0.90.1-prerelease0
         resources:
           requests:
             memory: "512Mi"
             cpu: "100m"
           limits:
             memory: "800Mi"
-            cpu: "500m"
+            cpu: "1000m"
         envFrom:
           - configMapRef:
               name: backend-configmap
         env:
+        - name: JAVA_TOOL_OPTIONS
+          value: "-XX:MaxRAMPercentage=75.0"
         - name: SPRING_DATASOURCE_URL
           value: jdbc:postgresql://postgres-service:5432/messaging_db
         - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
@@ -90,8 +98,77 @@ spec:
             secretKeyRef:
               name: backend-secret
               key: STRIPE_WEBHOOK_SECRET
+        
+        # Azure Storage
+        - name: AZURE_STORAGE_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: AZURE_STORAGE_CONNECTION_STRING
+
+        # Email
+        - name: SPRING_MAIL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: SPRING_MAIL_USERNAME
+        - name: SPRING_MAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: SPRING_MAIL_PASSWORD
+
+        # Google reCAPTCHA Enterprise
+        - name: GOOGLE_RECAPTCHA_ENTERPRISE_PROJECT_ID
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: GOOGLE_RECAPTCHA_ENTERPRISE_PROJECT_ID
+        - name: GOOGLE_RECAPTCHA_ENTERPRISE_API_KEY
+          valueFrom:  
+            secretKeyRef:
+              name: backend-secret
+              key: GOOGLE_RECAPTCHA_ENTERPRISE_API_KEY
+        - name: GOOGLE_RECAPTCHA_ENTERPRISE_SITE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: GOOGLE_RECAPTCHA_ENTERPRISE_SITE_KEY
+        - name: CAPTCHA_BYPASS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: CAPTCHA_BYPASS_TOKEN
+        # Email bypass domain
+        - name: EMAIL_BYPASS_DOMAIN
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: EMAIL_BYPASS_DOMAIN
         ports:
         - containerPort: 8081
+        startupProbe:
+          httpGet:
+            path: /api/actuator/health/liveness
+            port: 8081
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/actuator/health/readiness
+            port: 8081
+          periodSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+          timeoutSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /api/actuator/health/liveness
+            port: 8081
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - name: firebase-key-volume
           mountPath: "/etc/firebase"
@@ -105,11 +182,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend-service
+  labels:
+    app: backend-service
 spec:
   selector:
     app: backend
   ports:
-  - port: 8081
+  - name: http
+    port: 8081
     targetPort: 8081
 ---
 apiVersion: v1
@@ -119,9 +199,16 @@ metadata:
 data:
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_WEB_REDIRECT_URI: "https://decibel.foo/oauth/callback"
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_DESKTOP_REDIRECT_URI: "http://localhost:8081/oauth/callback"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_MOBILE_REDIRECT_URI: "https://decibel.foo/oauth/callback"
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_WEB_PROVIDER: "google"
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_DESKTOP_PROVIDER: "google"
   SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_MOBILE_PROVIDER: "google"
   SPRING_FLYWAY_ENABLED: "false"
   SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
   FIREBASE_SERVICE_ACCOUNT_PATH: "/etc/firebase/firebase-service-account.json"
+  MANAGEMENT_METRICS_TAGS_APPLICATION: "backend"
+  SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "10"
+  SERVER_TOMCAT_THREADS_MAX: "150"
+  SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE: "20s"
+  MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+  SPRING_MESSAGING_STOMP_LOG_PAYLOAD_LENGTH: "1024"
