@@ -17,8 +17,8 @@ spec:
       labels:
         app: backend
     spec:
-      imagePullSecrets:
-      - name: ghcr-registry-secret
+      #imagePullSecrets:
+      #- name: ghcr-registry-secret
       containers:
       - name: backend
         image: ghcr.io/decibel-swe/backend:v0.90.3

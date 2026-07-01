@@ -12,8 +12,8 @@ spec:
       labels:
         app: frontend
     spec:
-      imagePullSecrets:
-      - name: ghcr-registry-secret
+      #imagePullSecrets:
+      #- name: ghcr-registry-secret
       containers:
       - name: frontend
         image: ghcr.io/decibel-swe/frontend:v1.45.15

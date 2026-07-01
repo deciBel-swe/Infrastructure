@@ -57,10 +57,10 @@ To allow the cluster to pull private images, create a `docker-registry` secret:
  2. **Generate the secret manifest:**
   If the default path below fails, copy `~/.docker/config.json` to your current directory and update the `--from-file` path.
       ```bash
-      kubectl create secret generic my-registry-secret \
+      kubectl create secret generic ghcr-registry-secret \
         --from-file=.dockerconfigjson=$HOME/.docker/config.json \
         --type=kubernetes.io/dockerconfigjson \
-        --dry-run=client -o yaml | tee ./k8s-config/secrets/registry-secret.yaml
+        --dry-run=client -o yaml | tee ./k8s-config/secrets/ghcr-registry-secret.yaml
       ```
  3. **Apply the secret:**
       ```bash
